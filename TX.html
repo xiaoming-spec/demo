@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="U-XA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <script type="text/javascript" src="../js/jQuery.js"></script>
+</head>
+ 
+<body>
+    <img id="cvsToday" src="">
+    <label id="lblWeather">--</label>
+	<hr/>
+    <label id="lblTemperature">--</label>
+	<br/>
+	<br/>
+    <label id="lblCurTemp">--</label>
+	<br/>
+	<br/>
+
+	<br/>
+	<label id="dressing">--</label>
+	<br/>
+	<label id="uv">--</label>
+	<br/>
+	<label id="travel">--</label>
+	<br/>
+	<label id="flu">--</label>
+	<br/>
+	<label id="sport">--</label>
+    <script type="text/javascript">
+   // 获取城市
+          var cityUrl = 'http://pv.sohu.com/cityjson';
+          $.getScript(
+              cityUrl,
+              function() {
+                  var city =returnCitySN.cname;
+   				console.log(city)
+                  // 获取天气预报
+                  $.ajax({
+                      url: "https://api.seniverse.com/v3/weather/now.json?key=SHgST0xQXcKOyF2wn&location="+ city + "&language=zh-Hans&unit=c",
+                      type: "get",
+                      success: function(baiduTQ) {
+                              if (baiduTQ.results[0].last_update != 0) {
+                                  var data = baiduTQ.results[0].now;
+   								// console.log(data)
+                                  document.getElementById("lblTemperature").innerHTML = city + "<br/>"+"(" +"当前"+ ")"+ data.temperature +"°";
+                                  document.getElementById("lblWeather").innerHTML = data.text;
+                                  
+                                  
+   
+   //                                var imgPath = data.dayPictureUrl;
+   //                                document.getElementById("cvsToday").src = imgPath;
+                              }
+   //                        } catch (err) {
+   //                            alert(err)
+   //                        }}
+   							
+   							
+   
+   }
+                  });
+   				$.ajax({
+   					url: "https://api.seniverse.com/v3/life/suggestion.json?key=SHgST0xQXcKOyF2wn&location="+ city + "&language=zh-Hans",
+   					type: "get",
+   					success: function(TQ) {
+   						var data = TQ.results[0].now;
+   						document.getElementById("dressing").innerHTML ="穿衣指数："+TQ.results[0].suggestion.dressing.brief
+   						document.getElementById("flu").innerHTML ="感冒指数："+TQ.results[0].suggestion.flu.brief
+   						document.getElementById("sport").innerHTML ="运动指数："+TQ.results[0].suggestion.sport.brief
+   						document.getElementById("uv").innerHTML ="紫外线强度："+TQ.results[0].suggestion.uv.brief
+   						document.getElementById("travel").innerHTML ="旅游外出："+TQ.results[0].suggestion.travel.brief
+   					}
+   				})
+   				$.ajax({
+   					url: "https://api.seniverse.com/v3/weather/daily.json?key=SHgST0xQXcKOyF2wn&location="+ city + "&language=zh-Hans&unit=c&start=0&days=5",
+   					type: "get",
+   					success: function(fiveTQ) {
+   						console.log(fiveTQ.results[0].daily)
+   						let data = fiveTQ.results[0].daily
+   						document.getElementById("lblCurTemp").innerHTML = "[" + data[0].high +"°"+ "/"+data[0].low +"°"+"]"
+   				
+   					}
+   				})
+              });
+    </script>
+</body>
+ 
+</html>
